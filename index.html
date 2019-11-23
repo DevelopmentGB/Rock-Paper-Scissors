@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+</head>
+
+<body>
+
+
+
+</body>
+
+<script>
+
+
+    function capitalize (playerSelection) {
+            userStringUpperCase = playerSelection.toUpperCase();
+
+            return userStringUpperCase;
+        }
+
+    function game() {
+
+        let playerSelection;
+        let playerScore = 0;
+        let computerScore = 0;
+        let round = 1;
+
+        function computerPlay(computerChoice) {
+            let arrayRPS = ['ROCK', 'PAPER', 'SCISSORS'];
+            computerChoice = arrayRPS[Math.floor(Math.random() * arrayRPS.length)];
+            return computerChoice;
+        }
+
+        // Major game loop controller
+        while (playerScore < 3 && computerScore < 3) {
+            console.log(playRound());
+            console.log('Computer\'s score is ' + computerScore);
+            console.log('Your score is ' + playerScore);
+        };
+
+        if (playerScore == 3) {
+            console.log('You won the whole game!');
+        }
+        if (computerScore == 3) {
+            console.log('The computer beat you this time. Thankfully it\'s all luck.');
+        }
+
+        function playRound(playerSelection, winner) {
+            
+            if (round == 1) {
+                playerSelection = capitalize(prompt("You versus me! First to three wins. Rock, paper, scissors,", "shoot!"))
+            } else {
+                playerSelection = capitalize(prompt("Rock, paper, scissors,", "shoot!"));
+            }
+            
+            const computerSelection = computerPlay();
+
+            console.log('Computer picks ' + computerSelection);
+
+            if (computerSelection == playerSelection) {
+                winner = 'Tie game!';
+            } else if (computerSelection == 'ROCK' && playerSelection == 'PAPER') {
+                winner = 'Paper beats rock. You win!';                //win
+                ++playerScore;
+                ++round;
+            } else if (computerSelection == 'ROCK' && playerSelection == 'SCISSORS') {
+                winner = 'Rock beats scissors. Computer wins.';       //lose
+                ++computerScore;
+                ++round;
+            } else if (computerSelection == 'PAPER' && playerSelection == 'ROCK') {
+                winner = 'Paper beats rock. Computer wins.';          //lose
+                ++computerScore;
+                ++round;
+            } else if (computerSelection == 'PAPER' && playerSelection == 'SCISSORS') {
+                winner = 'Scissors beat paper. You win!';   
+                ++playerScore;
+                ++round;                                              //win
+            } else if (computerSelection == 'SCISSORS' && playerSelection == 'ROCK') {
+                winner = 'Rock beats scissors. You win!';
+                ++playerScore;                                        //win
+                ++round;
+            } else if(computerSelection == 'SCISSORS' && playerSelection == 'PAPER') {
+                winner = 'Scissors beats paper. Computer wins';       //lose
+                ++computerScore;
+                ++round;
+            } else {
+                winner = 'Invalid response. Please enter your repsonse again.' //error message
+            }
+            return winner;
+
+        }
+
+    }
+
+    console.log(game());
+
+</script>
+
+</html>
