@@ -2,99 +2,258 @@
 
 <html>
 
-<head>
-</head>
+<head><title>Rock Paper Scissors</title></head>
 
 <body>
 
+    <h1>
+        Rock, Paper, Scissors
+    </h1>
 
+    <button id = "startID" class = "button">Start Game</button>
+
+    <div id = "gameAreaID">
+        <button id = "rockID" class = "choiceButton">Rock</button>
+        <button id = "paperID" class = "choiceButton">Paper</button>
+        <button id = "scissorsID" class = "choiceButton">Scissors</button>
+    </div>
 
 </body>
 
-<script>
+<style>
 
 
-    function capitalize (playerSelection) {
-            userStringUpperCase = playerSelection.toUpperCase();
-
-            return userStringUpperCase;
-        }
-
-    function game() {
-
-        let playerSelection;
-        let playerScore = 0;
-        let computerScore = 0;
-        let round = 1;
-
-        function computerPlay(computerChoice) {
-            let arrayRPS = ['ROCK', 'PAPER', 'SCISSORS'];
-            computerChoice = arrayRPS[Math.floor(Math.random() * arrayRPS.length)];
-            return computerChoice;
-        }
-
-        // Major game loop controller
-        while (playerScore < 3 && computerScore < 3) {
-            console.log(playRound());
-            console.log('Computer\'s score is ' + computerScore);
-            console.log('Your score is ' + playerScore);
-        };
-
-        if (playerScore == 3) {
-            console.log('You won the whole game!');
-        }
-        if (computerScore == 3) {
-            console.log('The computer beat you this time. Thankfully it\'s all luck.');
-        }
-
-        function playRound(playerSelection, winner) {
-            
-            if (round == 1) {
-                playerSelection = capitalize(prompt("You versus me! First to three wins. Rock, paper, scissors,", "shoot!"))
-            } else {
-                playerSelection = capitalize(prompt("Rock, paper, scissors,", "shoot!"));
-            }
-            
-            const computerSelection = computerPlay();
-
-            console.log('Computer picks ' + computerSelection);
-
-            if (computerSelection == playerSelection) {
-                winner = 'Tie game!';
-            } else if (computerSelection == 'ROCK' && playerSelection == 'PAPER') {
-                winner = 'Paper beats rock. You win!';                //win
-                ++playerScore;
-                ++round;
-            } else if (computerSelection == 'ROCK' && playerSelection == 'SCISSORS') {
-                winner = 'Rock beats scissors. Computer wins.';       //lose
-                ++computerScore;
-                ++round;
-            } else if (computerSelection == 'PAPER' && playerSelection == 'ROCK') {
-                winner = 'Paper beats rock. Computer wins.';          //lose
-                ++computerScore;
-                ++round;
-            } else if (computerSelection == 'PAPER' && playerSelection == 'SCISSORS') {
-                winner = 'Scissors beat paper. You win!';   
-                ++playerScore;
-                ++round;                                              //win
-            } else if (computerSelection == 'SCISSORS' && playerSelection == 'ROCK') {
-                winner = 'Rock beats scissors. You win!';
-                ++playerScore;                                        //win
-                ++round;
-            } else if(computerSelection == 'SCISSORS' && playerSelection == 'PAPER') {
-                winner = 'Scissors beats paper. Computer wins';       //lose
-                ++computerScore;
-                ++round;
-            } else {
-                winner = 'Invalid response. Please enter your repsonse again.' //error message
-            }
-            return winner;
-
-        }
-
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        background:rgb(129, 129, 129);  
     }
 
-    console.log(game());
+    h1 {
+        color:rgb(130, 231, 206);
+        background-color:rgb(129, 129, 129);
+        text-align: center;
+    }
+
+    #gameAreaID {
+        /* background: #ea00ff; */
+        display: none;
+        height: 100px;
+        left: 50%;
+        line-height: 100px;
+        margin: -50px 0 0 -100px;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        width: 200px;
+    }
+
+    .choiceButton {
+        color: rgb(130, 231, 206);
+        font-size: 40px;
+        background: rgb(129, 129, 129);
+        display: block;
+        position: relative;
+        margin: 10px auto;
+        border: 6px solid rgb(255, 152, 138);
+        top: -63%;
+    }
+
+    .button {
+        color: rgb(130, 231, 206);
+        font-size: 40px;
+        background: rgb(129, 129, 129);
+        display: block;
+        position: relative;
+        margin: 10px auto;
+        border: 6px solid rgb(255, 152, 138);
+        top: -63%;
+    }
+
+    #startID {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #computerScoreDisplay {
+        display: none;
+        color:rgb(130, 231, 206);
+        background-color:rgb(129, 129, 129);
+        border: 2px solid rgb(255, 152, 138);
+        position: absolute;
+        text-align: right;
+        top: 35%;
+        right: 20%;
+    }
+    #playerScoreDisplay {
+        display: none;
+        color:rgb(130, 231, 206);
+        background-color:rgb(129, 129, 129);
+        border: 2px solid rgb(255, 152, 138);
+        position: absolute;
+        text-align: left;
+        top: 35%;
+        left: 20%;
+    }
+
+</style>
+
+<script>
+
+let startButton = document.querySelector('#startID');
+let gameArea = document.querySelector('#gameAreaID');
+let anyChoiceButton = document.getElementsByClassName('choiceButton'); //becomes an array
+
+let choseRock = document.querySelector('#rockID');
+let chosePaper = document.querySelector('#paperID');
+let choseScissors = document.querySelector('#scissorsID');
+
+let heading = document.querySelector('h1');
+let playerSelection;
+let winner;
+let round = 0;
+let computerScore = 0;
+let playerScore = 0;
+let gameShouldRun = 1;
+let roundText = document.body.appendChild(document.createElement('h1'));
+let gameOverText = document.body.appendChild(document.createElement('h1'));
+
+let computerScoreText = document.body.appendChild(document.createElement('h3'));
+let playerScoreText = document.body.appendChild(document.createElement('h3'));
+    computerScoreText.setAttribute('id','computerScoreDisplay');
+    playerScoreText.setAttribute('id','playerScoreDisplay');
+
+
+startButton.addEventListener('click', () => {
+    startButton.style.display = "none";
+    gameStart();
+});
+
+function gameOver() {
+    gameOverText.style.display = 'block';
+    gameArea.style.display = 'none';
+    gameOverText.textContent = 'REPLAY';
+    gameOverText.addEventListener('click', () => {
+        startButton.style.display = 'block';
+        gameOverText.style.display = 'none';
+        computerScoreText.style.display = 'none';
+        playerScoreText.style.display = 'none';
+        playerScore = 0;
+        computerScore = 0;
+        round = 0;
+        gameShouldRun = 0;
+    })
+}
+
+// replacing start screen with gameplay screen
+function gameStart() {
+    gameArea.style.display = "block";
+    gameLoop();
+}
+
+function computerPlay() {
+        let arrayRPS = ['ROCK', 'PAPER', 'SCISSORS'];
+        computerChoice = arrayRPS[Math.round(Math.random() * arrayRPS.length)];
+        computerScoreText.style.display = "block"; 
+        playerScoreText.style.display = "block"; 
+        return computerChoice;
+    };
+
+
+
+function gameLoop() {
+    for (let i = 0; i < anyChoiceButton.length; i++) {
+        anyChoiceButton[i].addEventListener('mouseup', function() {
+            
+            const computerSelection = computerPlay();
+            const once = {
+                once : true
+            };
+
+            function listen(){
+                choseRock.addEventListener('mouseup', function() {
+                    playerSelection = 'ROCK';
+                    console.log(playerSelection);  
+                }, once);
+                chosePaper.addEventListener('mouseup', function() {
+                    playerSelection = 'PAPER';
+                    console.log(playerSelection);  
+                }, once);
+                choseScissors.addEventListener('mouseup', function() {
+                    playerSelection = 'SCISSORS';
+                    console.log(playerSelection);  
+                }, once);
+
+            }
+            listen();
+            
+
+            scoreTally();
+
+            function scoreTally() {
+
+                if (playerScore != 3 && computerScore != 3) {
+                    if (computerSelection == playerSelection) {
+                        winner = 'Tie game!';
+                        
+                    } else if (computerSelection == 'ROCK' && playerSelection == 'PAPER') {
+                        winner = 'Paper beats rock. You win!';                //win
+
+                        ++playerScore;
+                    } else if (computerSelection == 'ROCK' && playerSelection == 'SCISSORS') {
+                        winner = 'Rock beats scissors. Computer wins.';       //lose
+
+                        ++computerScore;
+                    } else if (computerSelection == 'PAPER' && playerSelection == 'ROCK') {
+                        winner = 'Paper beats rock. Computer wins.';          //lose
+
+                        ++computerScore;
+                    } else if (computerSelection == 'PAPER' && playerSelection == 'SCISSORS') {
+                        winner = 'Scissors beat paper. You win!';   
+
+                        ++playerScore;                                          //win
+                    } else if (computerSelection == 'SCISSORS' && playerSelection == 'ROCK') {
+                        winner = 'Rock beats scissors. You win!';
+
+                        ++playerScore;                                        //win
+                    } else if(computerSelection == 'SCISSORS' && playerSelection == 'PAPER') {
+                        winner = 'Scissors beats paper. Computer wins';
+
+                        ++computerScore;
+                    }
+
+
+                    ++round;
+                    ++gameShouldRun;
+                }
+                if (playerScore >=3 || computerScore >= 3) {
+                    gameOver();
+                }
+
+            }
+
+
+            if (playerScore == 3) {
+                winner = 'You won the whole game!';
+                console.log('player win');
+            }
+            if (computerScore == 3) {
+                winner = 'The computer wins.';
+                console.log('computer win');
+            }
+
+            roundText.textContent = 'ROUND: ' + round;
+            playerScoreText.textContent = 'player: ' + playerScore;
+            computerScoreText.textContent = 'computer: ' + computerScore;
+
+            function updateScore() {
+                heading.textContent = winner;
+            }
+            updateScore();
+            });
+    }
+}
 
 </script>
 
